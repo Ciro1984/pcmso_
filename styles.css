@@ -1,0 +1,173 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    color:white;
+    background-color: rgba(32, 133, 65, 0.863);
+    border-radius: 15px;
+    box-shadow: 0px 10px 5px rgba(0, 0, 0, 0.2);
+
+  }
+
+  body{
+    background-image: url('assets/background_2.avif');
+    background-attachment: fixed; /* A imagem não se move ao rolar */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  header {
+    background-color: #14500585;
+    color: #fff;
+    padding: 10px 517px 10px;
+    text-align: center;
+    position:fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+  }
+  header a {
+    color: white;                  /* Cor do texto */
+    margin: 25px 20px;                /* Espaçamento lateral */
+    text-decoration: none;         /* Remove o sublinhado */
+    font-weight: normal;           /* Peso da fonte */
+    font-size: 15px;               /* Tamanho da fonte */
+    padding: 5px 20px;            /* Preenchimento interno (ajustar conforme necessário) */
+    border: 1px solid rgba(4, 128, 21, 0.562);      /* Borda branca ao redor do botão */
+    border-radius: 5px;           /* Bordas arredondadas */
+    background-color: rgba(233, 48, 2, 0.596); /* Fundo transparente */
+    transition: background-color 0.3s, color 0.3s; /* Transição suave para mudanças de cor */
+  }
+  
+  header a:hover {
+    background-color: rgba(3, 58, 12, 0.973);  /* Cor de fundo mais forte ao passar o mouse */
+    color: #fff;                              /* Cor do texto ao passar o mouse */
+    transform: scale(1.05);                    /* Efeito de zoom suave */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); /* Sombra ao passar o mouse */
+  }
+
+  .container{
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+
+   
+  }
+
+  .result-item{ 
+    padding: 0px;
+    border-bottom: 1px solid #ddd
+   
+
+  }
+
+  .logo {
+    position: absolute; 
+    top: 5px;   /* Ajuste para posicionar o logo acima do título */
+    left:-100px;
+    transform: translateX(120px);  /* Centraliza o logo */
+    width: 60px; /* Ajuste o tamanho conforme necessário */
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #ff0000; /* Borda azul */
+    border-radius: 9px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Sombra mais intensa */
+     }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .search-box {
+    margin-bottom: 20px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .results {
+    margin-top: 20px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background: #a5f89ad7;
+  }
+
+  .result-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .result-item:last-child {
+    border-bottom: none;
+  }
+
+  .result-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+  }
+
+  .result-item p {
+    margin: 5px 0;
+  }
+
+  footer {
+    background-color: #14500585;
+    color: #fff;
+    padding: 0px 0;
+    text-align: center;
+    position: fixed;  /* Faz com que o footer fique fixo na parte inferior da tela */
+    left: 0;
+    bottom: 0;  /* Fixa o footer no fundo */
+    width: 100%;  /* Garante que ocupe toda a largura */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  footer h1{
+    margin:0;
+    padding: 10px;
+    color: white;
+    margin: 0 20px;
+    text-decoration: none;
+    font-weight:normal;
+    font-size: 15px;
+    width: 100%;
+   
+  }
+
+  .h1-link{
+   text-align: center;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   text-align: center;
+   color: rgb(255, 255, 255);
+  }
+
+  .background_img{
+    background-image: url('assets/background_2.avif');
+    background-attachment: fixed; /* A imagem não se move ao rolar */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+  }
+
+  #results {
+    display: none; /* Esconde a caixa inicialmente */
+  }
+  

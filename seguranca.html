@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Exames por Função</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Vincula o CSS externo -->
+  <style>
+    /* Estilos podem ser adicionados aqui */
+    .result-item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .include-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .include-button:hover {
+      background-color: #45a049;
+    }
+    .results {
+      display: none; /* Inicialmente oculto */
+    }
+  </style>
+</head>
+<header>
+  <img src="assets/Logo.avif" alt="Logo da empresa" class="logo">
+  <a href="index.html">Segurança do Trabalho</a>
+</header>
+<body>
+  <div class="container">
+    <h1>Consulta de Riscos e Exames por Função</h1>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Digite a função para consultar..." />
+    </div>
+    <div id="results" class="results"></div>
+  </div>
+
+  <script>
+    const data = [
+      {
+        funcao: "Pintor + ruído",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Dermatológico | TGO / TGP/ GGT | Ureia | Creatinina | Espirometria | RX Tórax PA OIT | Acuidade visual",
+          periodico: "Exame Clínico | Audiometria | Dermatológico | TGO / TGP/ GGT | Ureia | Creatinina | Espirometria | RX Tórax PA OIT | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria | Espirometria"
+        },
+        riscos: {
+          acidentes: "Incêndios ou explosões, respingo de produtos químicos nos olhos, choques ou curto circuito, quedas e escorregões",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, radiação não ionizante (sol)",
+          biologicos: "N/A",
+          quimicos: "Solventes, pigmentos, resina, cargas e aditivos"
+        }
+      },
+      {
+        funcao: "Pintor + ruído + altura",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Dermatológico | TGO / TGP/ GGT | Ureia | Creatinina | Espirometria | RX Tórax PA OIT | Acuidade visual | Eletrocardiograma | Eletroencefalograma | Hemograma | Glicemia | Avaliação psicossocial",
+          periodico: "Exame Clínico | Audiometria | Dermatológico | TGO / TGP/ GGT | Ureia | Creatinina | Espirometria | RX Tórax PA OIT | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria | Espirometria "
+        },
+        riscos: {
+          acidentes: "Incêndios ou explosões, respingo de produtos químicos nos olhos, choques ou curto circuito, queda em diderença de nível, quedas e escorregões",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, radiação não ionizante (sol)",
+          biologicos: "N/A",
+          quimicos: "Solventes, pigmentos, resina, cargas e aditivos"
+        }
+      },
+
+      {
+        funcao: "Soldador",
+        exames: {
+          admissional: "Exame Clinico | Audiometria | TGO / TGP/ GGT |  Ureia | Creatinina |  Espirometria |  RX Tórax PA OIT  | Acuidade visual",
+          periodico: "Exame Clinico | Audiometria | TGO / TGP/ GGT |  Ureia | Creatinina |  Espirometria |  RX Tórax PA OIT  | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria | Espirometria "
+        },
+        riscos: {
+          acidentes: "Incêndios ou explosões, projeção de partículas, choques ou curto circuíto, quedas e escorregões, trabalho a quente (queimadura)",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, vibração de mãos e braços, radiação não ionizante (arco voltaíco)",
+          biologicos: "N/A",
+          quimicos: "Fumos de solda e poeiras metálicas",
+        }
+      },
+      {
+        funcao: "Serralheiro",
+        exames: {
+          admissional: "Exame Clinico | Audiometria | TGO / TGP/ GGT |  Ureia | Creatinina | Espirometria |  RX Tórax PA OIT  | Acuidade visual",
+          periodico: "Exame Clinico | Audiometria | TGO / TGP/ GGT |  Ureia | Creatinina | Espirometria |  RX Tórax PA OIT  | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria | Espirometria "
+        },
+        riscos: {
+          acidentes: "Incêndios ou explosões, projeção de partículas, choques ou curto circuíto, quedas e escorregões, trabalho a quente",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, vibração de mãos e braços, radiação não ionizante (arco voltaíco)",
+          biologicos: "N/A",
+          quimicos: "Fumos de solda e poeiras metálicas",
+        }
+      },
+      
+      {
+        funcao: "Secretária",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Auxiliar administartivo",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Projetista",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Coordenador(a) de RH",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Recepcionista",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Analista de RH",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+  {
+        funcao: "Agente administrativo",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+
+  {
+        funcao: "Analista administrativo",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+
+  {
+        funcao: "Assistente administrativo",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+ {
+        funcao: "Auxiliar de escritório",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+       {
+        funcao: "Supervisor(a) administrativo",
+        exames: {
+          admissional: "Exame Clínico | Acuidade visual",
+          periodico: "Exame Clínico | Acuidade visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico ",
+        },
+        riscos: {
+          acidentes: "Queda, escorregões e batida contra",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "N/A",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+
+
+
+
+
+
+
+      {
+        funcao: "Motorista (caminhão)",
+        exames: {
+          admissional: "Exame Clinico | Acuidade Visual | Audiometria | Eletrocardiograma-ECG | Eletroencefalograma-EEG | Glicemia em Jejum | Hemograma Completo | Raio X - Coluna Lombo Sacra (somente na admissão, confirmar com a empresa solicitante do ASO) | Toxicológico (admissão, demissão e períodico a cada 2 anos e 6 meses ) | Avaliação psicossocial",
+          periodico: "Exame Clinico | Acuidade Visual | Audiometria | Eletrocardiograma-ECG | Eletroencefalograma-EEG | Glicemia em Jejum | Hemograma Completo | Avaliação psicossocial",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Colisões entre veículos (acidente de trânsito)",
+          ergonomicos: "Postura inadequada",
+          fisicos: "Ruído e vibração de corpo inteiro",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Operador de empilhadeira",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Eletrocardiograma -ECG | Eletroencefalograma-EEG| Glicemia | Hemograma Completo | Acuidade Visual | Avaliação psicossocial",
+          periodico: "Exame Clínico | Audiometria | Eletrocardiograma -ECG | Eletroencefalograma-EEG| Glicemia | Hemograma Completo | Acuidade Visual | Avaliação psicossocial",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Abalroamento, atropelamento, lapso involuntário do operador (falta de atenção)",
+          ergonomicos: "Postura inadequada",
+          fisicos: "Ruído e vibração de corpo inteiro",
+          biologicos: "N/A",
+          quimicos: "N/A",
+        }
+      },
+
+      {
+        funcao: "Mecânico de autos",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Dermatológico de mãos | Acuidade Visual",
+          periodico: "Exame Clínico | Audiometria | Dermatológico de mãos | Acuidade Visual",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Ferramentas inadeqquadas, quedas, escorregões, prensamento dos membros superiores e inferiores, projeção de partículas",
+          ergonomicos: "Postura inadequada",
+          fisicos: "Ruído e vibração de corpo inteiro",
+          biologicos: "N/A",
+          quimicos: "Óleos e graxas",
+        }
+      },
+
+      {
+        funcao: "Cozinheiro",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Parasitológico de fezes | Urina I | Hemograma | Micológico de unhas | VDRL ",
+          periodico: "Exame Clínico | Audiometria | Parasitológico de fezes | Urina I | Hemograma | Micológico de unhas | VDRL ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico",
+        },
+        riscos: {
+          acidentes: "Incêndio, panela quente, facas, objetos pontiagudos, máquinas rotativas, quedas, escorregões",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído e calor",
+          biologicos: "N/A",
+          quimicos: "Óleos e graxas",
+        }
+      },
+
+
+      {
+        funcao: "Nutricionista",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Parasitológico de fezes | Urina I | Hemograma | Micológico de unhas | VDRL ",
+          periodico: "Exame Clínico | Audiometria | Parasitológico de fezes | Urina I | Hemograma | Micológico de unhas | VDRL ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico",
+        },
+        riscos: {
+          acidentes: "Incêndio, panela quente, facas, objetos pontiagudos, máquinas rotativas, quedas, escorregões",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído e calor",
+          biologicos: "N/A",
+          quimicos: "Óleos e graxas",
+        }
+      },
+
+      {
+        funcao: "Ajudante de cozinha",
+        exames: {
+          admissional: "Exame Clínico | Audiometria | Parasitológico de fezes | Urina I | Hemograma | Micológico de unhas | VDRL ",
+          periodico: "Exame Clínico | Audiometria | Parasitológico de fezes | Urina I | Hemograma | Micológico de unhas | VDRL ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico",
+        },
+        riscos: {
+          acidentes: "Incêndio, panela quente, facas, objetos pontiagudos, máquinas rotativas, quedas, escorregões",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído e calor",
+          biologicos: "N/A",
+          quimicos: "Óleos e graxas",
+        }
+      },
+
+      {
+        funcao: "Lavador",
+        exames: {
+          admissional: "Exame clínico | Audiometria | Dermatológico de mãos | Raio X Lombo Sacra | Acuidade visual | Espirometria | Raio X PA OIT",
+          periodico: "Exame clínico | Audiometria | Dermatológico de mãos | Raio X Lombo Sacra | Acuidade visual | Espirometria | Raio X PA OIT",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Incêndio, panela quente, facas, objetos pontiagudos, máquinas rotativas, quedas, escorregões",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, umidade",
+          biologicos: "N/A",
+          quimicos: "Desincrustantes ativos, detergentes",
+        }
+      },
+
+      {
+        funcao: "Faxineiro(a)",
+        exames: {
+          admissional:  "Exame Clínico | Audiometria | Hemograma |Protoparasitológico de fezes-PPF | Dermatológico de mãos | VDRL ",
+          periodico:  "Exame Clínico | Audiometria | Hemograma |Protoparasitológico de fezes-PPF | Dermatológico de mãos | VDRL ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Quedas, escorregões, respingos de produtos de limpeza nos olhos",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, umidade",
+          biologicos: "Vírus e bactérias (lixo)",
+          quimicos: "Domissanitários (produtos de limpeza)"
+        }
+      },
+
+      {
+        funcao: "Auxiliar de limpeza",
+        exames: {
+          admissional:  "Exame Clínico | Audiometria | Hemograma |Protoparasitológico de fezes-PPF | Dermatológico de mãos | VDRL ",
+          periodico:  "Exame Clínico | Audiometria | Hemograma |Protoparasitológico de fezes-PPF | Dermatológico de mãos | VDRL ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Quedas, escorregões, respingos de produtos de limpeza nos olhos",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, umidade",
+          biologicos: "Vírus e bactérias (lixo)",
+          quimicos: "Domissanitários (produtos de limpeza)"
+        }
+      },
+
+      {
+        funcao: "Auxiliar de serviços gerais (limpeza)",
+        exames: {
+          admissional:  "Exame Clínico | Audiometria | Hemograma |Protoparasitológico de fezes-PPF | Dermatológico de mãos | VDRL ",
+          periodico:  "Exame Clínico | Audiometria | Hemograma |Protoparasitológico de fezes-PPF | Dermatológico de mãos | VDRL ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional: "Exame Clínico | Audiometria",
+        },
+        riscos: {
+          acidentes: "Quedas, escorregões, respingos de produtos de limpeza nos olhos",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, umidade",
+          biologicos: "Vírus e bactérias (lixo)",
+          quimicos: "Domissanitários (produtos de limpeza)"
+        }
+      },
+
+
+      {
+        funcao: "Enfermeiro(a)",
+        exames: {
+          admissional:  "Exame Clínico |  Hemograma | Anti HBS | Anti HBsAG | VDRL | Anti HCV  ",
+          periodico:  "Exame Clínico |  Hemograma | Anti HBS | Anti HBsAG | VDRL | Anti HCV  ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional:  "Exame Clínico |  Hemograma | Anti HBS | Anti HBsAG | VDRL | Anti HCV  ",
+        },
+        riscos: {
+          acidentes: "Quedas, escorregões, materiais perfurocortantes (agulhas, bisturis, etc)",
+          ergonomicos: "Postura inadequada",
+          fisicos: "N/A",
+          biologicos: "Vírus e bactérias (fluídos corporais)",
+          quimicos: "N/A"
+        }
+      },
+
+      {
+        funcao: "Eletricista",
+        exames: {
+          admissional:  "Exame clínico | Audiometria | Hemograma | Glicemia | Eletrocardiograma | Eletroencefalograma | Acuidade visual | Avaliação psicossocial | Raio X de Tórax PA OIT | Espirometria | Teste de Ishihara ",
+          periodico: "Exame clínico | Audiometria | Hemograma | Glicemia | Eletrocardiograma | Eletroencefalograma | Acuidade visual | Avaliação psicossocial | Raio X de Tórax PA OIT | Espirometria | Teste de Ishihara ",
+          retorno: "Exame Clínico",
+          mudanca_risco: "Realizar os exames complementares da periodicidade 'Demissional' e acrescentar os exames correspondentes ao 'admissional' do novo GHE.",
+          demissional:  "Exame Clínico | Audiometria"
+        },
+        riscos: {
+          acidentes: "Quedas, escorregões, queda em diferença de nível, ferramentas inadequadas, choque elétrico",
+          ergonomicos: "Postura inadequada e lesões por esforço repetitivo",
+          fisicos: "Ruído, radiação não ionizante (sol)",
+          biologicos: "N/A",
+          quimicos: "Desengraxantes, óleos dielétricos, poeira mineral",
+        }
+      },
+
+        
+      ,
+      // Adicione mais funções conforme necessário
+    ];
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      console.log("Evento input acionado"); // Verifique no console
+      const query = this.value.toLowerCase();
+      const resultsContainer = document.getElementById("results");
+      resultsContainer.innerHTML = "";
+
+      if (query === "") {
+        resultsContainer.style.display = "none";
+        return;
+      }
+
+      resultsContainer.style.display = "block";
+
+      const filteredData = data.filter(item => item.funcao.toLowerCase().includes(query));
+      console.log("Dados filtrados:", filteredData); // Verifique no console
+
+      if (filteredData.length > 0) {
+        filteredData.forEach(item => {
+          const resultDiv = document.createElement("div");
+          resultDiv.classList.add("result-item");
+
+          resultDiv.innerHTML = `
+            <h3>${item.funcao}</h3>
+            <p><strong>Exames Admissional:</strong> ${item.exames.admissional}</p>
+            <p><strong>Exames Periódico:</strong> ${item.exames.periodico}</p>
+            <p><strong>Exames Retorno ao Trabalho:</strong> ${item.exames.retorno}</p>
+            <p><strong>Exames Mudança de Risco Ocupacional:</strong> ${item.exames.mudanca_risco}</p>
+            <p><strong>Exames Demissional:</strong> ${item.exames.demissional}</p>
+            <p><strong>Riscos de Acidentes:</strong> ${item.riscos.acidentes}</p>
+            <p><strong>Riscos Ergonômicos:</strong> ${item.riscos.ergonomicos}</p>
+            <p><strong>Riscos Físicos:</strong> ${item.riscos.fisicos}</p>
+            <p><strong>Riscos Biológicos:</strong> ${item.riscos.biologicos}</p>
+            <p><strong>Riscos Químicos:</strong> ${item.riscos.quimicos}</p>
+            <button class="include-button" data-funcao="${item.funcao}">Incluir Função no Relatório</button>
+          `;
+
+          resultsContainer.appendChild(resultDiv);
+        });
+
+        // Adiciona evento de clique ao botão "Incluir Função no Relatório"
+        const buttons = document.querySelectorAll(".include-button");
+        buttons.forEach(button => {
+          button.addEventListener("click", function () {
+            const funcaoSelecionada = this.getAttribute("data-funcao");
+            incluirFuncaoNoRelatorio(funcaoSelecionada);
+          });
+        });
+      } else {
+        resultsContainer.innerHTML = "<p>Não há função cadastrada. Solicitar suporte da segurança do trabalho.</p>";
+      }
+    });
+
+    // Função para enviar a função selecionada para o backend Python
+    function incluirFuncaoNoRelatorio(funcao) {
+      fetch("/incluir-funcao", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ funcao: funcao }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert(`Função "${funcao}" incluída no relatório com sucesso!`);
+        })
+        .catch(error => {
+          console.error("Erro ao incluir função no relatório:", error);
+          alert("Erro ao incluir função no relatório. Tente novamente.");
+        });
+    }
+  </script>
+</body>
+
+<footer>
+  <h1>Developed by CSM - Prevenir Serviços de Saúde 2025</h1>
+</footer>
+</html>
